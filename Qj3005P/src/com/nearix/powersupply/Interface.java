@@ -285,13 +285,13 @@ public class Interface {
 
 			}
 		});
-		spinnerU.setModel(new SpinnerNumberModel(0.0, 0.0, 30.0, 1.0));
+		spinnerU.setModel(new SpinnerNumberModel(0.0, 0.0, 30.0, 0.1));
 		spinnerU.setBackground(Color.WHITE);
 		spinnerU.setBounds(43, 20, 165, 32);
 		panel_2.add(spinnerU);
 
 		JSpinner spinnerI = new JSpinner();
-		spinnerI.setModel(new SpinnerNumberModel(0.0, 0.0, 5.0, 1.0));
+		spinnerI.setModel(new SpinnerNumberModel(0.0, 0.0, 5.0, 0.01));
 		spinnerI.setBackground(Color.WHITE);
 		spinnerI.setBounds(43, 73, 165, 32);
 		panel_2.add(spinnerI);
