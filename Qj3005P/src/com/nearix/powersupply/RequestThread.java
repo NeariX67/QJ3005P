@@ -12,11 +12,11 @@ public class RequestThread extends Thread {
 				if((System.currentTimeMillis() - lasttime) > 100) {
 					SerialReaderThread.outputbuffer = "";
 					if(reqIndex == 0) { //Requesting Voltage if index is 0
-						System.out.println("Requesting voltage");
+//						System.out.println("Requesting voltage");
 						GUI.serPort.writeBytes("VOUT1?\\n".getBytes(), "VOUT1?\\n".getBytes().length);
 					}
 					else { //Requesting Ampere if index is 1 (or != 0)
-						System.out.println("Requesting ampere");
+//						System.out.println("Requesting ampere");
 						GUI.serPort.writeBytes("IOUT1?\\n".getBytes(), "IOUT1?\\n".getBytes().length);
 					}
 					try {
@@ -61,8 +61,6 @@ public class RequestThread extends Thread {
 			}
 			return Double.parseDouble(input);
 		}
-		
-		
-		return 0.0;
+		return -1.0;
 	}
 }

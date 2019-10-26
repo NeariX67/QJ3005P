@@ -163,6 +163,7 @@ public class GUI extends Application {
 						String output2 = "VSET1:" + output + "\\n";
 						System.out.println("Sending: " + output2);
 						serPort.writeBytes(output2.getBytes(), output2.getBytes().length);
+						lasttime = System.currentTimeMillis();
 					}
 				}
 
