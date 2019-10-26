@@ -1,4 +1,5 @@
 package com.nearix.powersupply;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -105,10 +106,10 @@ public class Interface {
 		lbSpannung.setBounds(229, 23, 92, 26);
 		panel_2.add(lbSpannung);
 		
-		JLabel lbStärke = new JLabel("");
-		lbStärke.setFont(new Font("Tahoma", Font.BOLD, 21));
-		lbStärke.setBounds(229, 76, 92, 26);
-		panel_2.add(lbStärke);
+		JLabel lbStaerke = new JLabel("");
+		lbStaerke.setFont(new Font("Tahoma", Font.BOLD, 21));
+		lbStaerke.setBounds(229, 76, 92, 26);
+		panel_2.add(lbStaerke);
 		
 		JSlider slider = new JSlider();
 		slider.addChangeListener(new ChangeListener() {
@@ -128,7 +129,7 @@ public class Interface {
 		JSlider slider_1 = new JSlider();
 		slider_1.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				lbStärke.setText(String.format(Locale.US, "%.2f", slider_1.getValue()/1000.0));
+				lbStaerke.setText(String.format(Locale.US, "%.2f", slider_1.getValue()/1000.0));
 			}
 		});
 		
@@ -233,12 +234,12 @@ public class Interface {
 		lbSpannunngA.setBounds(31, 48, 161, 59);
 		panel_1.add(lbSpannunngA);
 		
-		JLabel lbStärkeA = new JLabel("0.00");
-		lbStärkeA.setForeground(Color.BLACK);
-		lbStärkeA.setFont(new Font("Cambria Math", Font.BOLD, 55));
-		lbStärkeA.setBackground(Color.BLACK);
-		lbStärkeA.setBounds(291, 46, 161, 59);
-		panel_1.add(lbStärkeA);
+		JLabel lbStaerkeA = new JLabel("0.00");
+		lbStaerkeA.setForeground(Color.BLACK);
+		lbStaerkeA.setFont(new Font("Cambria Math", Font.BOLD, 55));
+		lbStaerkeA.setBackground(Color.BLACK);
+		lbStaerkeA.setBounds(291, 46, 161, 59);
+		panel_1.add(lbStaerkeA);
 		
 		JLabel lbPA = new JLabel("0.00");
 		lbPA.setForeground(Color.BLACK);
