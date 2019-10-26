@@ -179,9 +179,9 @@ public class GUI extends Application {
 		});
 	}
 
-	public static void setLabelText(String text) {
-		lbAusgabe2.setText(text);
-	}
+//	public static void setLabelText(String text) {
+//		lbAusgabe2.setText(text);
+//	}
 
 	public static double getVoltage(SerialPort port) {
 		port.writeBytes(("VOUT1?\\n").getBytes(), ("VOUT1?\\n").getBytes().length);

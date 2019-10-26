@@ -9,15 +9,15 @@ public class RequestThread extends Thread {
 		System.out.println("Thread started!");
 		while (true) {
 			while (run) {
-				if((System.currentTimeMillis() - lasttime) > 100) {
+				if((System.currentTimeMillis() - lasttime) > 75) {
 					SerialReaderThread.outputbuffer = "";
 					if(reqIndex == 0) { //Requesting Voltage if index is 0
 //						System.out.println("Requesting voltage");
-						GUI.serPort.writeBytes("VOUT1?\\n".getBytes(), "VOUT1?\\n".getBytes().length);
+						Interface.serPort.writeBytes("VOUT1?\\n".getBytes(), "VOUT1?\\n".getBytes().length);
 					}
 					else { //Requesting Ampere if index is 1 (or != 0)
 //						System.out.println("Requesting ampere");
-						GUI.serPort.writeBytes("IOUT1?\\n".getBytes(), "IOUT1?\\n".getBytes().length);
+						Interface.serPort.writeBytes("IOUT1?\\n".getBytes(), "IOUT1?\\n".getBytes().length);
 					}
 					try {
 						Thread.sleep(30);
@@ -25,16 +25,16 @@ public class RequestThread extends Thread {
 						e.printStackTrace();
 					}
 					String outputbuffer = SerialReaderThread.outputbuffer;
-					switch (RequestThread.reqIndex) {
-					case 0: // voltage answer
+					switch (reqIndex) {
+					case 0:
 						if(outputbuffer.length() >= 4) {
-							System.out.println(getValue(outputbuffer));
+							Interface.voltage = getValue(outputbuffer);
 						}
 						reqIndex = 1;
 						break;
 					case 1:
-						if(outputbuffer.length() == 5) {
-							System.out.println(getValue(outputbuffer));
+						if(outputbuffer.length() >= 5) {
+							Interface.ampere = getValue(outputbuffer);
 						}
 						reqIndex = 0;
 						break;
@@ -42,7 +42,7 @@ public class RequestThread extends Thread {
 						System.out.println("Error: wrong requestIndex (" + RequestThread.reqIndex + ")");
 						break;
 					}
-					System.out.println();
+					Interface.refresh();
 					lasttime = System.currentTimeMillis();
 				}
 			}

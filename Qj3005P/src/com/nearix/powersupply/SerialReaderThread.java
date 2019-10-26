@@ -13,12 +13,12 @@ public class SerialReaderThread extends Thread {
 		while (true) {
 			while (run) {
 				try {
-					while (GUI.serPort.bytesAvailable() == 0) {
+					while (Interface.serPort.bytesAvailable() == 0) {
 						Thread.sleep(1);
 					}
 
-					byte[] readBuffer = new byte[GUI.serPort.bytesAvailable()];
-					/* int numRead = */GUI.serPort.readBytes(readBuffer, readBuffer.length);
+					byte[] readBuffer = new byte[Interface.serPort.bytesAvailable()];
+					Interface.serPort.readBytes(readBuffer, readBuffer.length);
 					outputbuffer += new String(readBuffer);
 					
 //					System.out.println(outputbuffer);
@@ -29,7 +29,6 @@ public class SerialReaderThread extends Thread {
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
