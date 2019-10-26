@@ -2,9 +2,12 @@ package com.nearix.powersupply;
 
 public class SerialReaderThread extends Thread {
 
-	String outputbuffer = "";
+	public static String outputbuffer = "";
+	public static double voltage = 0.0;
+	public static double ampere = 0.0;
 	public static boolean run = false;
-	
+	long lasttime;
+
 	public void run() {
 		System.out.println("Thread started!");
 		while (true) {
@@ -15,9 +18,10 @@ public class SerialReaderThread extends Thread {
 					}
 
 					byte[] readBuffer = new byte[GUI.serPort.bytesAvailable()];
-					/*int numRead = */GUI.serPort.readBytes(readBuffer, readBuffer.length);
-					System.out.println(new String(readBuffer));
+					/* int numRead = */GUI.serPort.readBytes(readBuffer, readBuffer.length);
 					outputbuffer += new String(readBuffer);
+					
+//					System.out.println(outputbuffer);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

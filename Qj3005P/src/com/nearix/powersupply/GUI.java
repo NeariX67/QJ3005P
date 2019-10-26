@@ -30,7 +30,9 @@ public class GUI extends Application {
 	long lasttime;
 
 	Thread thread = new Thread(new SerialReaderThread());
-
+	Thread reqThread = new Thread(new RequestThread());
+	
+	
 	ObservableList<String> Serialports = FXCollections.observableArrayList();
 	ComboBox<String> cbPorts = new ComboBox<String>(Serialports);
 
@@ -63,6 +65,7 @@ public class GUI extends Application {
 		}
 
 		thread.start();
+		reqThread.start();
 
 		stage.setTitle("JavaFX Test application");
 		stage.setWidth(800);
@@ -99,15 +102,19 @@ public class GUI extends Application {
 							serOpen = true;
 							serPort.setBaudRate(baudrate);
 							btnOpen.setText("Close");
+//							addSerialListener();
 							getVoltage(serPort);
-//							SerialReaderThread.run = true;
+							SerialReaderThread.run = true;
+							RequestThread.run = true;
 						} else {
 							serOpen = false;
 							SerialReaderThread.run = false;
+							RequestThread.run = false;
 							btnOpen.setText("Open");
 						}
 					} else {
 						SerialReaderThread.run = false;
+						RequestThread.run = false;
 						serOpen = false;
 						serPort.closePort();
 						btnOpen.setText("Open");
@@ -153,7 +160,7 @@ public class GUI extends Application {
 						} else {
 							output = "0" + String.format(Locale.US, "%.2f", voltage);
 						}
-						String output2 = "VSET1:" + output + "\\\\n";
+						String output2 = "VSET1:" + output + "\\n";
 						System.out.println("Sending: " + output2);
 						serPort.writeBytes(output2.getBytes(), output2.getBytes().length);
 					}
@@ -161,21 +168,12 @@ public class GUI extends Application {
 
 			}
 		});
-		
-//		serPort.addDataListener(new SerialPortDataListener() {
-//			@Override
-//			public void serialEvent(SerialPortEvent arg0) {
-//				
-//			}
-//			@Override
-//			public int getListeningEvents() {
-//				return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
-//			}
-//		});
-		
-		
+
 		stage.setOnCloseRequest(event -> {
-			serPort.closePort();
+			if (serPort != null) {
+				serPort.closePort();
+			}
+			RequestThread.run = false;
 			SerialReaderThread.run = false;
 		});
 	}
@@ -187,9 +185,9 @@ public class GUI extends Application {
 	public static double getVoltage(SerialPort port) {
 		port.writeBytes(("VOUT1?\\n").getBytes(), ("VOUT1?\\n").getBytes().length);
 		while (port.bytesAvailable() == 0) {
-			
+
 		}
-		
+
 		String outputbuffer = "";
 		byte[] readBuffer = new byte[port.bytesAvailable()];
 		port.readBytes(readBuffer, readBuffer.length);
@@ -199,4 +197,22 @@ public class GUI extends Application {
 		return 0.0;
 	}
 
+	public static void addSerialListener() {
+		serPort.addDataListener(new SerialPortDataListener() {
+			@Override
+			public void serialEvent(SerialPortEvent event) {
+				if (event.getEventType() != SerialPort.LISTENING_EVENT_DATA_AVAILABLE) {
+					return;
+				}
+				byte[] newData = new byte[serPort.bytesAvailable()];
+				int numRead = serPort.readBytes(newData, newData.length);
+				System.out.println(new String(newData));
+			}
+
+			@Override
+			public int getListeningEvents() {
+				return SerialPort.LISTENING_EVENT_DATA_AVAILABLE;
+			}
+		});
+	}
 }
