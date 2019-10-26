@@ -15,7 +15,7 @@ public class SerialReaderThread extends Thread {
 					}
 
 					byte[] readBuffer = new byte[GUI.serPort.bytesAvailable()];
-					int numRead = GUI.serPort.readBytes(readBuffer, readBuffer.length);
+					/*int numRead = */GUI.serPort.readBytes(readBuffer, readBuffer.length);
 					System.out.println(new String(readBuffer));
 					outputbuffer += new String(readBuffer);
 				} catch (Exception e) {
