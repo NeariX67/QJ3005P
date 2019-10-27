@@ -44,7 +44,7 @@ public class Interface {
 	int index = -1;
 	
 	public static double prefVoltage = 0.0;
-	public static double prefAmpere = 0.0;
+	public static double prefAmpere = 0.5;
 	public static double ampere = 0.0;
 	public static double voltage = 0.0;
 
@@ -56,7 +56,7 @@ public class Interface {
 	static JSpinner spinnerI = new JSpinner();
 	static JSpinner spinnerU = new JSpinner();
 	
-	static JButton btnSend = new JButton("Send");
+	static JButton btnSend = new JButton("Apply");
 	
 	
 	
@@ -131,6 +131,7 @@ public class Interface {
 				spinnerU.setValue(slider.getValue()/100.0);
 			}
 		});
+		
 		slider.setValue(0);
 		slider.setMaximum(3000);
 		slider.setBounds(366, 20, 313, 32);
@@ -147,13 +148,13 @@ public class Interface {
 		});
 
 		slider_1.setMaximum(5000);
-		slider_1.setValue(0);
+		slider_1.setValue(500);
 		slider_1.setBounds(366, 73, 313, 32);
 		panel_2.add(slider_1);
 		slider_1.setMajorTickSpacing(2);
 		slider_1.setMinorTickSpacing(1);
 
-		JButton btnScan = new JButton("Scan");
+		JButton btnScan = new JButton("Refresh");
 		btnScan.setBackground(new Color(211, 211, 211));
 		btnScan.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnScan.setBounds(570, 38, 141, 35);
@@ -209,8 +210,17 @@ public class Interface {
 		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (serOpen) {
-					String output = lbSpannung.getText();
-					System.out.println(output);
+					String output = "VSET1:" + getString(prefVoltage, false) + "\\n";
+					System.out.println("Sending: " + output);
+					serPort.writeBytes(output.getBytes(), output.getBytes().length);
+					try {
+						Thread.sleep(5);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					output = "ISET1:" + getString(prefAmpere, true) + "\\n";
+					System.out.println("Sending: " + output);
 					serPort.writeBytes(output.getBytes(), output.getBytes().length);
 				}
 			}
@@ -229,7 +239,9 @@ public class Interface {
 		comboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				index = comboBox.getSelectedIndex();
-				serPort = serList[index];
+				if(index != -1) {
+					serPort = serList[index];
+				}
 			}
 		});
 		comboBox.setBounds(21, 59, 270, 42);
@@ -293,10 +305,9 @@ public class Interface {
 		spinnerU.addChangeListener(new ChangeListener() {
 	        @Override
 	        public void stateChanged(ChangeEvent e) {
-	        	voltage = (double) spinnerU.getValue();
-				lbSpannung.setText(String.format(Locale.US, "%.2f", voltage));
-//				System.out.println("volt: " + voltage + ", 100x: "  + Math.round((voltage * 100)));
-				slider.setValue((int) Math.round((voltage * 100)));
+	        	prefVoltage = (double) spinnerU.getValue();
+				lbSpannung.setText(String.format(Locale.US, "%.2f", prefVoltage));
+				slider.setValue((int) Math.round((prefVoltage * 100)));
 	        }
 	    });
 		spinnerU.setBackground(Color.WHITE);
@@ -307,11 +318,11 @@ public class Interface {
 	        @Override
 	        public void stateChanged(ChangeEvent e) {
 				lbStaerke.setText(String.format(Locale.US, "%.3f", spinnerI.getValue()));
-				ampere = Double.parseDouble(lbStaerke.getText());
-				slider_1.setValue((int) (ampere * 1000));
+				prefAmpere = Double.parseDouble(lbStaerke.getText());
+				slider_1.setValue((int) (prefAmpere * 1000));
 	        }
 	    });
-		spinnerI.setModel(new SpinnerNumberModel(0.0, 0.0, 5.0, 0.001));
+		spinnerI.setModel(new SpinnerNumberModel(0.5, 0.0, 5.0, 0.001));
 		spinnerI.setBackground(Color.WHITE);
 		spinnerI.setBounds(43, 73, 165, 32);
 		panel_2.add(spinnerI);
@@ -329,7 +340,7 @@ public class Interface {
 	public static void refresh() {
 		lbSpannunngA.setText(String.format(Locale.US, "%.2f", voltage));
 		lbStaerkeA.setText(String.format(Locale.US, "%.3f", ampere));
-		lbPA.setText(String.format(Locale.US, "%.3f", voltage*ampere));
+		lbPA.setText(String.format(Locale.US, "%.2f", voltage*ampere));
 	}
 	
 	public static void writeFile(String text, String file) {
@@ -343,5 +354,20 @@ public class Interface {
 	    catch (IOException e) {
 	      System.err.println(e.toString());
 	    }		
+	}
+	public static String getString(double value, boolean isAmpere) {
+		String output = "";
+		if(!isAmpere) {
+			if(value >= 9.995) {
+				output = String.format(Locale.US, "%.2f", value);
+			}
+			else {
+				output = "0" + String.format(Locale.US, "%.2f", value);
+			}
+		}
+		else {
+			output = String.format(Locale.US, "%.3f", value);
+		}
+		return output;
 	}
 }
