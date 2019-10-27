@@ -32,9 +32,10 @@ import javax.swing.SwingConstants;
 public class Interface {
 	
 	//TODO: Enable Output button
-	//Aktuelle Daten müssen Rechtsbündig sein, passend für 3 nachkommestellen
+	//Aktuelle Daten müssen Rechtsbündig sein, passend für 3 nachkommestellen --- DONE
 	//Button für enable, disable data logger
-	//JSpinner nicht so breit
+	//JSpinner nicht so breit  --- DONE
+	//2 Buttons unter der JComboBox fuer -Datalogger   -DataMonitor
 	//
 	//Mach ich:
 	//Auslesen der Startwerte vom netzteil
