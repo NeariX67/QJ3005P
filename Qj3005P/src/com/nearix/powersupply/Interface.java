@@ -27,6 +27,7 @@ import java.util.Locale;
 
 import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
+import javax.swing.SwingConstants;
 
 public class Interface {
 	
@@ -119,21 +120,23 @@ public class Interface {
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setBackground(Color.WHITE);
-		panel_3.setBounds(321, 21, 242, 161);
+		panel_3.setBounds(321, 21, 242, 154);
 		panel.add(panel_3);
 		panel_3.setLayout(null);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 0, 242, 161);
+		scrollPane.setBounds(0, 0, 242, 155);
 		panel_3.add(scrollPane);
-		JLabel lbSpannung = new JLabel("");
+		JLabel lbSpannung = new JLabel("0.00");
+		lbSpannung.setHorizontalAlignment(SwingConstants.RIGHT);
 		lbSpannung.setFont(new Font("Tahoma", Font.BOLD, 21));
-		lbSpannung.setBounds(229, 23, 92, 26);
+		lbSpannung.setBounds(140, 23, 92, 26);
 		panel_2.add(lbSpannung);
 
-		JLabel lbStaerke = new JLabel("");
+		JLabel lbStaerke = new JLabel("0.000");
+		lbStaerke.setHorizontalAlignment(SwingConstants.RIGHT);
 		lbStaerke.setFont(new Font("Tahoma", Font.BOLD, 21));
-		lbStaerke.setBounds(229, 76, 92, 26);
+		lbStaerke.setBounds(140, 76, 92, 26);
 		panel_2.add(lbStaerke);
 
 		JSlider slider = new JSlider();
@@ -146,7 +149,7 @@ public class Interface {
 		
 		slider.setValue(0);
 		slider.setMaximum(3000);
-		slider.setBounds(366, 20, 313, 32);
+		slider.setBounds(260, 20, 410, 32);
 		panel_2.add(slider);
 		slider.setMajorTickSpacing(2);
 		slider.setMinorTickSpacing(1);
@@ -161,7 +164,7 @@ public class Interface {
 
 		slider_1.setMaximum(5000);
 		slider_1.setValue(500);
-		slider_1.setBounds(366, 73, 313, 32);
+		slider_1.setBounds(260, 73, 410, 32);
 		panel_2.add(slider_1);
 		slider_1.setMajorTickSpacing(2);
 		slider_1.setMinorTickSpacing(1);
@@ -169,7 +172,7 @@ public class Interface {
 		JButton btnScan = new JButton("Refresh");
 		btnScan.setBackground(new Color(211, 211, 211));
 		btnScan.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnScan.setBounds(570, 38, 141, 35);
+		btnScan.setBounds(573, 20, 141, 35);
 		btnScan.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				index = -1;
@@ -215,7 +218,7 @@ public class Interface {
 			}
 		});
 		btnOpen.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnOpen.setBounds(570, 84, 141, 35);
+		btnOpen.setBounds(573, 60, 141, 35);
 		panel.add(btnOpen);
 
 		btnSend.setEnabled(false);
@@ -239,10 +242,11 @@ public class Interface {
 		});
 		btnSend.setBackground(new Color(211, 211, 211));
 		btnSend.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnSend.setBounds(570, 129, 141, 35);
+		btnSend.setBounds(573, 140, 141, 35);
 		panel.add(btnSend);
 
 		JLabel lblSerialportAuswhlen = new JLabel("SerialPort Ausw\u00E4hlen");
+		lblSerialportAuswhlen.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSerialportAuswhlen.setFont(new Font("Tahoma", Font.PLAIN, 19));
 		lblSerialportAuswhlen.setBounds(46, 21, 223, 35);
 		panel.add(lblSerialportAuswhlen);
@@ -258,6 +262,11 @@ public class Interface {
 		});
 		comboBox.setBounds(21, 59, 270, 42);
 		panel.add(comboBox);
+		
+		JButton btnOutput = new JButton("Enable Output");
+		btnOutput.setBackground(new Color(211, 211, 211));
+		btnOutput.setBounds(573, 100, 141, 35);
+		panel.add(btnOutput);
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBounds(21, 260, 732, 116);
@@ -265,33 +274,39 @@ public class Interface {
 		panel_1.setLayout(null);
 
 		JLabel lblSpannungAktuell = new JLabel("Spannung Aktuell");
+		lblSpannungAktuell.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSpannungAktuell.setBounds(21, 10, 205, 26);
 		panel_1.add(lblSpannungAktuell);
 
 		JLabel lblStrkeAktuell = new JLabel("Stärke Aktuell");
+		lblStrkeAktuell.setHorizontalAlignment(SwingConstants.CENTER);
 		lblStrkeAktuell.setBounds(291, 10, 149, 26);
 		panel_1.add(lblStrkeAktuell);
 
 		JLabel lblAktuell = new JLabel("Elektrische Leistung");
+		lblAktuell.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAktuell.setBounds(516, 10, 205, 26);
 		panel_1.add(lblAktuell);
+		lbSpannunngA.setHorizontalAlignment(SwingConstants.RIGHT);
 
 		lbSpannunngA.setForeground(Color.BLACK);
-		lbSpannunngA.setFont(new Font("Cambria Math", Font.BOLD, 55));
+		lbSpannunngA.setFont(new Font("Cambria Math", Font.BOLD, 50));
 		lbSpannunngA.setBackground(Color.BLACK);
-		lbSpannunngA.setBounds(31, 48, 161, 59);
+		lbSpannunngA.setBounds(-16, 47, 161, 59);
 		panel_1.add(lbSpannunngA);
+		lbStaerkeA.setHorizontalAlignment(SwingConstants.RIGHT);
 
 		lbStaerkeA.setForeground(Color.BLACK);
-		lbStaerkeA.setFont(new Font("Cambria Math", Font.BOLD, 55));
+		lbStaerkeA.setFont(new Font("Cambria Math", Font.BOLD, 50));
 		lbStaerkeA.setBackground(Color.BLACK);
-		lbStaerkeA.setBounds(291, 46, 161, 59);
+		lbStaerkeA.setBounds(249, 47, 161, 59);
 		panel_1.add(lbStaerkeA);
+		lbPA.setHorizontalAlignment(SwingConstants.RIGHT);
 
 		lbPA.setForeground(Color.BLACK);
-		lbPA.setFont(new Font("Cambria Math", Font.BOLD, 55));
+		lbPA.setFont(new Font("Cambria Math", Font.BOLD, 50));
 		lbPA.setBackground(Color.BLACK);
-		lbPA.setBounds(516, 46, 161, 59);
+		lbPA.setBounds(477, 47, 161, 59);
 		panel_1.add(lbPA);
 
 		JLabel lblV = new JLabel("V");
@@ -323,7 +338,7 @@ public class Interface {
 	        }
 	    });
 		spinnerU.setBackground(Color.WHITE);
-		spinnerU.setBounds(43, 20, 165, 32);
+		spinnerU.setBounds(43, 20, 70, 32);
 		panel_2.add(spinnerU);
 
 		spinnerI.addChangeListener(new ChangeListener() {
@@ -336,7 +351,7 @@ public class Interface {
 	    });
 		spinnerI.setModel(new SpinnerNumberModel(0.5, 0.0, 5.0, 0.001));
 		spinnerI.setBackground(Color.WHITE);
-		spinnerI.setBounds(43, 73, 165, 32);
+		spinnerI.setBounds(43, 73, 70, 32);
 		panel_2.add(spinnerI);
 		
 		JLabel lblU = new JLabel("U:");
