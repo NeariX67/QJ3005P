@@ -29,6 +29,18 @@ import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
 
 public class Interface {
+	
+	//TODO: Enable Output button
+	//Aktuelle Daten müssen Rechtsbündig sein, passend für 3 nachkommestellen
+	//Button für enable, disable data logger
+	//JSpinner nicht so breit
+	//
+	//Mach ich:
+	//Auslesen der Startwerte vom netzteil
+	//
+	//
+	//	
+	
 
 	private JFrame frmNetzteilKonfiguration;
 	public static SerialPort serPort;
@@ -51,8 +63,8 @@ public class Interface {
 
 	static JLabel lbSpannunngA = new JLabel("0.00");
 	static JLabel lbStaerkeA = new JLabel("0.000");
-	static JLabel lbPA = new JLabel("0.000");
-
+	static JLabel lbPA = new JLabel("0.00");
+	
 	static JSpinner spinnerI = new JSpinner();
 	static JSpinner spinnerU = new JSpinner();
 	
