@@ -20,6 +20,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Locale;
 
 import javax.swing.JComboBox;
@@ -47,8 +50,13 @@ public class Interface {
 
 
 	static JLabel lbSpannunngA = new JLabel("0.00");
-	static JLabel lbStaerkeA = new JLabel("0.00");
-	static JLabel lbPA = new JLabel("0.00");
+	static JLabel lbStaerkeA = new JLabel("0.000");
+	static JLabel lbPA = new JLabel("0.000");
+
+	static JSpinner spinnerI = new JSpinner();
+	static JSpinner spinnerU = new JSpinner();
+	
+	static JButton btnSend = new JButton("Send");
 	
 	
 	
@@ -120,8 +128,8 @@ public class Interface {
 		slider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
 				lbSpannung.setText(String.format(Locale.US, "%.2f", slider.getValue() / 100.0));
+				spinnerU.setValue(slider.getValue()/100.0);
 			}
-
 		});
 		slider.setValue(0);
 		slider.setMaximum(3000);
@@ -133,7 +141,8 @@ public class Interface {
 		JSlider slider_1 = new JSlider();
 		slider_1.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				lbStaerke.setText(String.format(Locale.US, "%.2f", slider_1.getValue() / 1000.0));
+				lbStaerke.setText(String.format(Locale.US, "%.3f", slider_1.getValue() / 1000.0));
+				spinnerI.setValue(slider_1.getValue()/1000.0);
 			}
 		});
 
@@ -170,10 +179,12 @@ public class Interface {
 							serOpen = true;
 							serPort.setBaudRate(baudrate);
 							btnOpen.setText("Close");
+							btnSend.setEnabled(true);
 							SerialReaderThread.run = true;
 							RequestThread.run = true;
 						} else {
 							serOpen = false;
+							btnSend.setEnabled(false);
 							SerialReaderThread.run = false;
 							RequestThread.run = false;
 							btnOpen.setText("Open");
@@ -181,6 +192,7 @@ public class Interface {
 					} else {
 						SerialReaderThread.run = false;
 						RequestThread.run = false;
+						btnSend.setEnabled(false);
 						serOpen = false;
 						serPort.closePort();
 						btnOpen.setText("Open");
@@ -193,16 +205,17 @@ public class Interface {
 		btnOpen.setBounds(570, 84, 141, 35);
 		panel.add(btnOpen);
 
-		JButton btnSend = new JButton("Send");
+		btnSend.setEnabled(false);
 		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (serOpen) {
 					String output = lbSpannung.getText();
+					System.out.println(output);
 					serPort.writeBytes(output.getBytes(), output.getBytes().length);
 				}
 			}
 		});
-		btnSend.setBackground(Color.LIGHT_GRAY);
+		btnSend.setBackground(new Color(211, 211, 211));
 		btnSend.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnSend.setBounds(570, 129, 141, 35);
 		panel.add(btnSend);
@@ -276,22 +289,29 @@ public class Interface {
 		lblW.setFont(new Font("Tahoma", Font.BOLD, 40));
 		lblW.setBounds(647, 54, 48, 38);
 		panel_1.add(lblW);
-
-		JSpinner spinnerU = new JSpinner();
-		spinnerU.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				lbSpannung.setText((String) spinnerU.getValue());
-
-			}
-		});
-		spinnerU.setModel(new SpinnerNumberModel(0.0, 0.0, 30.0, 0.1));
+		spinnerU.setModel(new SpinnerNumberModel(0.0, 0.0, 30.0, 0.01));
+		spinnerU.addChangeListener(new ChangeListener() {
+	        @Override
+	        public void stateChanged(ChangeEvent e) {
+	        	voltage = (double) spinnerU.getValue();
+				lbSpannung.setText(String.format(Locale.US, "%.2f", voltage));
+//				System.out.println("volt: " + voltage + ", 100x: "  + Math.round((voltage * 100)));
+				slider.setValue((int) Math.round((voltage * 100)));
+	        }
+	    });
 		spinnerU.setBackground(Color.WHITE);
 		spinnerU.setBounds(43, 20, 165, 32);
 		panel_2.add(spinnerU);
 
-		JSpinner spinnerI = new JSpinner();
-		spinnerI.setModel(new SpinnerNumberModel(0.0, 0.0, 5.0, 0.01));
+		spinnerI.addChangeListener(new ChangeListener() {
+	        @Override
+	        public void stateChanged(ChangeEvent e) {
+				lbStaerke.setText(String.format(Locale.US, "%.3f", spinnerI.getValue()));
+				ampere = Double.parseDouble(lbStaerke.getText());
+				slider_1.setValue((int) (ampere * 1000));
+	        }
+	    });
+		spinnerI.setModel(new SpinnerNumberModel(0.0, 0.0, 5.0, 0.001));
 		spinnerI.setBackground(Color.WHITE);
 		spinnerI.setBounds(43, 73, 165, 32);
 		panel_2.add(spinnerI);
@@ -310,5 +330,18 @@ public class Interface {
 		lbSpannunngA.setText(String.format(Locale.US, "%.2f", voltage));
 		lbStaerkeA.setText(String.format(Locale.US, "%.3f", ampere));
 		lbPA.setText(String.format(Locale.US, "%.3f", voltage*ampere));
+	}
+	
+	public static void writeFile(String text, String file) {
+
+	    BufferedWriter f;
+	    try {
+	      f = new BufferedWriter(new FileWriter(file));
+	      f.write(text);
+	      f.close();
+	    }
+	    catch (IOException e) {
+	      System.err.println(e.toString());
+	    }		
 	}
 }
