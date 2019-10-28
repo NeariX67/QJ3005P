@@ -33,10 +33,9 @@ public class Interface {
 	
 	//TODO: Enable Output button
 	//Aktuelle Daten müssen Rechtsbündig sein, passend für 3 nachkommestellen --- DONE
-	//Button für enable, disable data logger
+	//Button für enable, disable data logger ---DONE
 	//JSpinner nicht so breit  --- DONE
-	//2 Buttons unter der JComboBox fuer -Datalogger   -DataMonitor
-	//
+	//2 Buttons unter der JComboBox fuer -Datalogger   -DataMonitor ---DONE
 	//Mach ich:
 	//Auslesen der Startwerte vom netzteil
 	//
@@ -121,12 +120,12 @@ public class Interface {
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setBackground(Color.WHITE);
-		panel_3.setBounds(321, 21, 242, 154);
+		panel_3.setBounds(321, 21, 242, 143);
 		panel.add(panel_3);
 		panel_3.setLayout(null);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 0, 242, 155);
+		scrollPane.setBounds(0, 0, 242, 143);
 		panel_3.add(scrollPane);
 		JLabel lbSpannung = new JLabel("0.00");
 		lbSpannung.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -164,7 +163,7 @@ public class Interface {
 		});
 
 		slider_1.setMaximum(5000);
-		slider_1.setValue(500);
+		slider_1.setValue(0);
 		slider_1.setBounds(260, 73, 410, 32);
 		panel_2.add(slider_1);
 		slider_1.setMajorTickSpacing(2);
@@ -268,6 +267,24 @@ public class Interface {
 		btnOutput.setBackground(new Color(211, 211, 211));
 		btnOutput.setBounds(573, 100, 141, 35);
 		panel.add(btnOutput);
+		
+		JButton btnDataloggerOnOff = new JButton("Datalogger On");
+		btnDataloggerOnOff.setBackground(new Color(211, 211, 211));
+		btnDataloggerOnOff.setFont(new Font("Tahoma", Font.BOLD, 15));
+		btnDataloggerOnOff.setBounds(375, 166, 141, 26);
+		panel.add(btnDataloggerOnOff);
+		
+		JButton btnDatalogger = new JButton("Datalogger");
+		btnDatalogger.setBackground(new Color(211, 211, 211));
+		btnDatalogger.setFont(new Font("Tahoma", Font.BOLD, 15));
+		btnDatalogger.setBounds(21, 129, 125, 35);
+		panel.add(btnDatalogger);
+		
+		JButton btnDatamonitor = new JButton("Datamonitor");
+		btnDatamonitor.setBackground(new Color(211, 211, 211));
+		btnDatamonitor.setFont(new Font("Tahoma", Font.BOLD, 15));
+		btnDatamonitor.setBounds(165, 129, 125, 35);
+		panel.add(btnDatamonitor);
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBounds(21, 260, 732, 116);
@@ -279,7 +296,7 @@ public class Interface {
 		lblSpannungAktuell.setBounds(21, 10, 205, 26);
 		panel_1.add(lblSpannungAktuell);
 
-		JLabel lblStrkeAktuell = new JLabel("Stärke Aktuell");
+		JLabel lblStrkeAktuell = new JLabel("Staerke Aktuell");
 		lblStrkeAktuell.setHorizontalAlignment(SwingConstants.CENTER);
 		lblStrkeAktuell.setBounds(291, 10, 149, 26);
 		panel_1.add(lblStrkeAktuell);
@@ -314,20 +331,20 @@ public class Interface {
 		lblV.setForeground(Color.BLACK);
 		lblV.setBackground(Color.BLACK);
 		lblV.setFont(new Font("Tahoma", Font.BOLD, 40));
-		lblV.setBounds(153, 54, 48, 38);
+		lblV.setBounds(166, 55, 48, 38);
 		panel_1.add(lblV);
 
 		JLabel lblA = new JLabel("A");
 		lblA.setForeground(Color.BLACK);
 		lblA.setBackground(Color.BLACK);
 		lblA.setFont(new Font("Tahoma", Font.BOLD, 40));
-		lblA.setBounds(419, 54, 48, 38);
+		lblA.setBounds(429, 55, 48, 38);
 		panel_1.add(lblA);
 
 		JLabel lblW = new JLabel("W");
 		lblW.setForeground(Color.BLACK);
 		lblW.setFont(new Font("Tahoma", Font.BOLD, 40));
-		lblW.setBounds(647, 54, 48, 38);
+		lblW.setBounds(659, 55, 48, 38);
 		panel_1.add(lblW);
 		spinnerU.setModel(new SpinnerNumberModel(0.0, 0.0, 30.0, 0.01));
 		spinnerU.addChangeListener(new ChangeListener() {
