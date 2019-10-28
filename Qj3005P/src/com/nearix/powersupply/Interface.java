@@ -264,6 +264,11 @@ public class Interface {
 		panel.add(comboBox);
 		
 		JButton btnOutput = new JButton("Enable Output");
+		btnOutput.setFont(new Font("Tahoma", Font.BOLD, 15));
+		btnOutput.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnOutput.setBackground(new Color(211, 211, 211));
 		btnOutput.setBounds(573, 100, 141, 35);
 		panel.add(btnOutput);
