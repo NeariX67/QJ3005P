@@ -31,16 +31,7 @@ import javax.swing.SwingConstants;
 
 public class Interface {
 	
-	//TODO: Enable Output button
-	//Aktuelle Daten müssen Rechtsbündig sein, passend für 3 nachkommestellen --- DONE
-	//Button für enable, disable data logger ---DONE
-	//JSpinner nicht so breit  --- DONE
-	//2 Buttons unter der JComboBox fuer -Datalogger   -DataMonitor ---DONE
-	//Mach ich:
-	//Auslesen der Startwerte vom netzteil
-	//
-	//
-	//	
+	//TODO: CSV: INformationen in Excel speichern 
 	
 
 	private JFrame frmNetzteilKonfiguration;
@@ -272,12 +263,6 @@ public class Interface {
 		btnOutput.setBackground(new Color(211, 211, 211));
 		btnOutput.setBounds(573, 100, 141, 35);
 		panel.add(btnOutput);
-		
-		JButton btnDataloggerOnOff = new JButton("Datalogger On");
-		btnDataloggerOnOff.setBackground(new Color(211, 211, 211));
-		btnDataloggerOnOff.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnDataloggerOnOff.setBounds(375, 166, 141, 26);
-		panel.add(btnDataloggerOnOff);
 		
 		JButton btnDatalogger = new JButton("Datalogger");
 		btnDatalogger.setBackground(new Color(211, 211, 211));
