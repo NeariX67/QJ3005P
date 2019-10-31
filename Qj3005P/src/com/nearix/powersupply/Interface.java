@@ -13,6 +13,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jfree.data.xy.DefaultXYDataset;
 
@@ -23,11 +24,13 @@ import jdk.internal.dynalink.MonomorphicCallSite;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Locale;
 
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
@@ -53,8 +56,6 @@ public class Interface {
 	public static double prefAmpere = 0.5;
 	public static double ampere = 0.0;
 	public static double voltage = 0.0;
-	
-	
 
 	static JLabel lbSpannunngA = new JLabel("0.00");
 	static JLabel lbStaerkeA = new JLabel("0.000");
@@ -99,7 +100,6 @@ public class Interface {
 		reqThread.start();
 		monThread.start();
 		DataMonitor.Datamonitor();
-		
 
 		JPanel panel_2 = new JPanel();
 		panel_2.setBounds(21, 382, 732, 126);
@@ -183,7 +183,6 @@ public class Interface {
 				serPort = null;
 				btnOpen.setText("Open");
 				btnSend.setEnabled(false);
-				
 
 			}
 		});
@@ -295,10 +294,25 @@ public class Interface {
 		btnDatalogger.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String output = "Voltage;Ampere\n";
-				for(int i = 0; i < DataMonitorThread.counter; i++) {
-					output += String.format("%.2f", DataMonitorThread.voltageList.get(i)) + ";" + String.format("%.3f", DataMonitorThread.ampereList.get(i)) + "\n";
+				for (int i = 0; i < DataMonitorThread.counter; i++) {
+					output += String.format("%.2f", DataMonitorThread.voltageList.get(i)) + ";"
+							+ String.format("%.3f", DataMonitorThread.ampereList.get(i)) + "\n";
 				}
-				writeFile(output, "test.csv");
+				JFileChooser chooser = new JFileChooser();
+				chooser.setDialogType(JFileChooser.SAVE_DIALOG);
+				chooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+				chooser.setFileFilter(new FileNameExtensionFilter("Comma-separated values (.csv)", ".csv"));
+				if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+					if (chooser.getSelectedFile().getAbsolutePath().endsWith(File.separator)) {
+						writeFile(output, chooser.getSelectedFile().getPath() + "unnamed.csv");
+					} else if (!chooser.getSelectedFile().getAbsolutePath().endsWith(".csv")) {
+						writeFile(output, chooser.getSelectedFile().getPath() + ".csv");
+					}
+					else {
+						writeFile(output, chooser.getSelectedFile().getPath());
+					}
+
+				}
 			}
 		});
 		btnDatalogger.setBackground(new Color(211, 211, 211));
@@ -420,7 +434,7 @@ public class Interface {
 	}
 
 	public static void writeFile(String text, String file) {
-
+		System.out.println(file);
 		BufferedWriter f;
 		try {
 			f = new BufferedWriter(new FileWriter(file));
