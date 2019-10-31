@@ -14,12 +14,14 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.jfree.data.xy.DefaultXYDataset;
+
 import com.fazecast.jSerialComm.SerialPort;
+
+import jdk.internal.dynalink.MonomorphicCallSite;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -30,9 +32,8 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 
 public class Interface {
-	
-	//TODO: CSV: INformationen in Excel speichern 
-	
+
+	// TODO: CSV: INformationen in Excel speichern
 
 	private JFrame frmNetzteilKonfiguration;
 	public static SerialPort serPort;
@@ -41,29 +42,30 @@ public class Interface {
 
 	Thread thread = new Thread(new SerialReaderThread());
 	Thread reqThread = new Thread(new RequestThread());
-	
-	
+	Thread monThread = new Thread(new DataMonitorThread());
+
 	int baudrate = 9600;
-	boolean serOpen = false;
+	static boolean serOpen = false;
 	int index = -1;
-	
+	int outputstate = 0;
+
 	public static double prefVoltage = 0.0;
 	public static double prefAmpere = 0.5;
 	public static double ampere = 0.0;
 	public static double voltage = 0.0;
-
+	
+	
 
 	static JLabel lbSpannunngA = new JLabel("0.00");
 	static JLabel lbStaerkeA = new JLabel("0.000");
 	static JLabel lbPA = new JLabel("0.00");
-	
+
 	static JSpinner spinnerI = new JSpinner();
 	static JSpinner spinnerU = new JSpinner();
-	
+
 	static JButton btnSend = new JButton("Apply");
-	
-	
-	
+	static JButton btnOpen = new JButton("Open");
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -78,15 +80,12 @@ public class Interface {
 		for (int i = 0; i < (serList = SerialPort.getCommPorts()).length; i++) {
 			comboBox.addItem(serList[i].toString());
 		}
-		
-		
-	}
 
+	}
 
 	public Interface() {
 		initialize();
 	}
-
 
 	private void initialize() {
 		frmNetzteilKonfiguration = new JFrame();
@@ -95,9 +94,12 @@ public class Interface {
 		frmNetzteilKonfiguration.setBounds(100, 100, 800, 600);
 		frmNetzteilKonfiguration.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmNetzteilKonfiguration.getContentPane().setLayout(null);
-		
+
 		thread.start();
 		reqThread.start();
+		monThread.start();
+		DataMonitor.Datamonitor();
+		
 
 		JPanel panel_2 = new JPanel();
 		panel_2.setBounds(21, 382, 732, 126);
@@ -134,10 +136,10 @@ public class Interface {
 		slider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
 				lbSpannung.setText(String.format(Locale.US, "%.2f", slider.getValue() / 100.0));
-				spinnerU.setValue(slider.getValue()/100.0);
+				spinnerU.setValue(slider.getValue() / 100.0);
 			}
 		});
-		
+
 		slider.setValue(0);
 		slider.setMaximum(3000);
 		slider.setBounds(260, 20, 410, 32);
@@ -149,7 +151,7 @@ public class Interface {
 		slider_1.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				lbStaerke.setText(String.format(Locale.US, "%.3f", slider_1.getValue() / 1000.0));
-				spinnerI.setValue(slider_1.getValue()/1000.0);
+				spinnerI.setValue(slider_1.getValue() / 1000.0);
 			}
 		});
 
@@ -166,17 +168,27 @@ public class Interface {
 		btnScan.setBounds(573, 20, 141, 35);
 		btnScan.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				SerialReaderThread.run = false;
+				RequestThread.run = false;
+				DataMonitorThread.run = false;
+				if (serPort != null) {
+					serPort.closePort();
+				}
 				index = -1;
 				comboBox.removeAllItems();
 				for (int i = 0; i < (serList = SerialPort.getCommPorts()).length; i++) {
 					comboBox.addItem(serList[i].toString());
 				}
+				serOpen = false;
+				serPort = null;
+				btnOpen.setText("Open");
+				btnSend.setEnabled(false);
+				
 
 			}
 		});
 		panel.add(btnScan);
 
-		JButton btnOpen = new JButton("Open");
 		btnOpen.setBackground(new Color(211, 211, 211));
 		btnOpen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -189,16 +201,19 @@ public class Interface {
 							btnSend.setEnabled(true);
 							SerialReaderThread.run = true;
 							RequestThread.run = true;
+							DataMonitorThread.run = true;
 						} else {
 							serOpen = false;
 							btnSend.setEnabled(false);
 							SerialReaderThread.run = false;
 							RequestThread.run = false;
+							DataMonitorThread.run = false;
 							btnOpen.setText("Open");
 						}
 					} else {
 						SerialReaderThread.run = false;
 						RequestThread.run = false;
+						DataMonitorThread.run = false;
 						btnSend.setEnabled(false);
 						serOpen = false;
 						serPort.closePort();
@@ -246,33 +261,59 @@ public class Interface {
 		comboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				index = comboBox.getSelectedIndex();
-				if(index != -1) {
+				if (index != -1) {
 					serPort = serList[index];
 				}
 			}
 		});
 		comboBox.setBounds(21, 59, 270, 42);
 		panel.add(comboBox);
-		
+
 		JButton btnOutput = new JButton("Enable Output");
-		btnOutput.setFont(new Font("Tahoma", Font.BOLD, 15));
+		btnOutput.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnOutput.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (serOpen) {
+					if (outputstate == 0) {
+						btnOutput.setText("Disable Output");
+						outputstate = 1;
+					} else {
+						btnOutput.setText("Enable Output");
+						outputstate = 0;
+					}
+					String output = "OUTPUT" + outputstate + "\n";
+					System.out.println("Sending: " + output);
+					serPort.writeBytes(output.getBytes(), output.getBytes().length);
+				}
 			}
 		});
 		btnOutput.setBackground(new Color(211, 211, 211));
 		btnOutput.setBounds(573, 100, 141, 35);
 		panel.add(btnOutput);
-		
+
 		JButton btnDatalogger = new JButton("Datalogger");
+		btnDatalogger.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String output = "Voltage;Ampere\n";
+				for(int i = 0; i < DataMonitorThread.counter; i++) {
+					output += String.format("%.2f", DataMonitorThread.voltageList.get(i)) + ";" + String.format("%.3f", DataMonitorThread.ampereList.get(i)) + "\n";
+				}
+				writeFile(output, "test.csv");
+			}
+		});
 		btnDatalogger.setBackground(new Color(211, 211, 211));
 		btnDatalogger.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnDatalogger.setBounds(21, 129, 125, 35);
 		panel.add(btnDatalogger);
-		
+
 		JButton btnDatamonitor = new JButton("Datamonitor");
+		btnDatamonitor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DataMonitor.show();
+			}
+		});
 		btnDatamonitor.setBackground(new Color(211, 211, 211));
-		btnDatamonitor.setFont(new Font("Tahoma", Font.BOLD, 15));
+		btnDatamonitor.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnDatamonitor.setBounds(165, 129, 125, 35);
 		panel.add(btnDatamonitor);
 
@@ -338,30 +379,30 @@ public class Interface {
 		panel_1.add(lblW);
 		spinnerU.setModel(new SpinnerNumberModel(0.0, 0.0, 30.0, 0.01));
 		spinnerU.addChangeListener(new ChangeListener() {
-	        @Override
-	        public void stateChanged(ChangeEvent e) {
-	        	prefVoltage = (double) spinnerU.getValue();
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				prefVoltage = (double) spinnerU.getValue();
 				lbSpannung.setText(String.format(Locale.US, "%.2f", prefVoltage));
 				slider.setValue((int) Math.round((prefVoltage * 100)));
-	        }
-	    });
+			}
+		});
 		spinnerU.setBackground(Color.WHITE);
 		spinnerU.setBounds(43, 20, 70, 32);
 		panel_2.add(spinnerU);
 
 		spinnerI.addChangeListener(new ChangeListener() {
-	        @Override
-	        public void stateChanged(ChangeEvent e) {
+			@Override
+			public void stateChanged(ChangeEvent e) {
 				lbStaerke.setText(String.format(Locale.US, "%.3f", spinnerI.getValue()));
 				prefAmpere = Double.parseDouble(lbStaerke.getText());
 				slider_1.setValue((int) (prefAmpere * 1000));
-	        }
-	    });
+			}
+		});
 		spinnerI.setModel(new SpinnerNumberModel(0.5, 0.0, 5.0, 0.001));
 		spinnerI.setBackground(Color.WHITE);
 		spinnerI.setBounds(43, 73, 70, 32);
 		panel_2.add(spinnerI);
-		
+
 		JLabel lblU = new JLabel("U:");
 		lblU.setBounds(10, 23, 92, 26);
 		panel_2.add(lblU);
@@ -371,36 +412,34 @@ public class Interface {
 		panel_2.add(lblI);
 
 	}
-	
+
 	public static void refresh() {
 		lbSpannunngA.setText(String.format(Locale.US, "%.2f", voltage));
 		lbStaerkeA.setText(String.format(Locale.US, "%.3f", ampere));
-		lbPA.setText(String.format(Locale.US, "%.2f", voltage*ampere));
+		lbPA.setText(String.format(Locale.US, "%.2f", voltage * ampere));
 	}
-	
+
 	public static void writeFile(String text, String file) {
 
-	    BufferedWriter f;
-	    try {
-	      f = new BufferedWriter(new FileWriter(file));
-	      f.write(text);
-	      f.close();
-	    }
-	    catch (IOException e) {
-	      System.err.println(e.toString());
-	    }		
+		BufferedWriter f;
+		try {
+			f = new BufferedWriter(new FileWriter(file));
+			f.write(text);
+			f.close();
+		} catch (IOException e) {
+			System.err.println(e.toString());
+		}
 	}
+
 	public static String getString(double value, boolean isAmpere) {
 		String output = "";
-		if(!isAmpere) {
-			if(value >= 9.995) {
+		if (!isAmpere) {
+			if (value >= 9.995) {
 				output = String.format(Locale.US, "%.2f", value);
-			}
-			else {
+			} else {
 				output = "0" + String.format(Locale.US, "%.2f", value);
 			}
-		}
-		else {
+		} else {
 			output = String.format(Locale.US, "%.3f", value);
 		}
 		return output;

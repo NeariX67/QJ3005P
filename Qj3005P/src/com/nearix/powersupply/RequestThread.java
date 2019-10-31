@@ -9,7 +9,7 @@ public class RequestThread extends Thread {
 		System.out.println("Thread started!");
 		while (true) {
 			while (run) {
-				if((System.currentTimeMillis() - lasttime) > 150) {
+				if((System.currentTimeMillis() - lasttime) > 100) {
 					SerialReaderThread.outputbuffer = "";
 					if(reqIndex == 0) { //Requesting Voltage if index is 0
 						Interface.serPort.writeBytes("VOUT1?\\n".getBytes(), "VOUT1?\\n".getBytes().length);

@@ -16,12 +16,12 @@ public class SerialReaderThread extends Thread {
 					while (Interface.serPort.bytesAvailable() == 0) {
 						Thread.sleep(1);
 					}
+					if (Interface.serPort.bytesAvailable() > 0) {
+						byte[] readBuffer = new byte[Interface.serPort.bytesAvailable()];
+						Interface.serPort.readBytes(readBuffer, readBuffer.length);
+						outputbuffer += new String(readBuffer);
+					}
 
-					byte[] readBuffer = new byte[Interface.serPort.bytesAvailable()];
-					Interface.serPort.readBytes(readBuffer, readBuffer.length);
-					outputbuffer += new String(readBuffer);
-					
-//					System.out.println(outputbuffer);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
