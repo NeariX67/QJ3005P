@@ -15,11 +15,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import org.jfree.data.xy.DefaultXYDataset;
-
 import com.fazecast.jSerialComm.SerialPort;
-
-import jdk.internal.dynalink.MonomorphicCallSite;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;

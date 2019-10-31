@@ -10,13 +10,8 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
-import org.jfree.chart.ui.ApplicationFrame;
-import org.jfree.data.general.DatasetChangeEvent;
-import org.jfree.data.general.DatasetChangeListener;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-
-import com.sun.javafx.webkit.theme.Renderer;
 
 public class DataMonitor {
 
@@ -35,6 +30,7 @@ public class DataMonitor {
 	
 	public static void Datamonitor() {
 		EventQueue.invokeLater(new Runnable() {
+			@SuppressWarnings("unused")
 			public void run() {
 				try {
 					DataMonitor window = new DataMonitor();
