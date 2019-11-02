@@ -122,7 +122,7 @@ public class Interface {
 		lbSpannung.setBounds(140, 23, 92, 26);
 		panel_2.add(lbSpannung);
 
-		JLabel lbStaerke = new JLabel("0.000");
+		JLabel lbStaerke = new JLabel("0.500");
 		lbStaerke.setHorizontalAlignment(SwingConstants.RIGHT);
 		lbStaerke.setFont(new Font("Tahoma", Font.BOLD, 21));
 		lbStaerke.setBounds(140, 76, 92, 26);
@@ -152,7 +152,7 @@ public class Interface {
 		});
 
 		slider_1.setMaximum(5000);
-		slider_1.setValue(0);
+		slider_1.setValue(500);
 		slider_1.setBounds(260, 73, 410, 32);
 		panel_2.add(slider_1);
 		slider_1.setMajorTickSpacing(2);

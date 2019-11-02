@@ -13,7 +13,7 @@ public class DataMonitorThread extends Thread {
 
 	public void run() {
 		System.out.println("Thread started!");
-		DataMonitor.xax.setRange(0, 401);
+		DataMonitor.xax.setRange(0, 2001);
 		while (true) {
 			while (run) {
 				if ((System.currentTimeMillis() - lasttime) > 100) {
@@ -25,8 +25,8 @@ public class DataMonitorThread extends Thread {
 					DataMonitor.serWatt.add(counter, Interface.voltage*Interface.ampere);
 					lasttime = System.currentTimeMillis();
 					counter++;
-					if(counter >= 400) {
-						DataMonitor.xax.setRange(counter - 400, counter + 1);
+					if(counter >= 2000) {
+						DataMonitor.xax.setRange(counter - 2000, counter + 1);
 					}
 				}
 			}
