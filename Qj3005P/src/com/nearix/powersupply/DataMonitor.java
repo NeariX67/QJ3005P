@@ -17,7 +17,7 @@ public class DataMonitor {
 
 	private static JFrame frame;
 	
-	//JFreeChart variables b
+	//JFreeChart variables
 	static XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
 	static NumberAxis xax = new NumberAxis("Zeit");
 	static NumberAxis yax = new NumberAxis("Daten");
