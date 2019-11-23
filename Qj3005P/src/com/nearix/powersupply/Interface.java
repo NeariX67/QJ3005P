@@ -32,8 +32,6 @@ import javax.swing.SwingConstants;
 
 public class Interface {
 
-	// TODO: CSV: INformationen in Excel speichern
-
 	private JFrame frmNetzteilKonfiguration;
 	public static SerialPort serPort;
 	public static SerialPort[] serList;
@@ -232,7 +230,6 @@ public class Interface {
 					try {
 						Thread.sleep(5);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					output = "ISET1:" + getString(prefAmpere, true) + "\\n";
